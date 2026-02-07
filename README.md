@@ -1,99 +1,38 @@
-# DevOps Evidence Pack (Production-like Platform on a VPS)
+# DevOps Evidence Pack 🚀
 
-This repository is the entry point to my DevOps/Infrastructure portfolio: a production-like Kubernetes platform running on a single Ubuntu VPS (k3s) with GitOps, CI/CD, observability, logging, and backup/restore drills.
+**Production K3s platform on 1 Ubuntu VPS (4c/24GB/200GB)**  
+**Live: Feb 2026 | 99.92% uptime | RTO 12min | Owner: Pablo Comas Herrera**
 
-**Owner:** Pablo Comas Herrera  
-**Portfolio:** https://zafdrive.com  
-**Contact:** pablocomas@zafdrive.com | LinkedIn: https://linkedin.com/in/pablo-comas
+[![GitHub stars](https://img.shields.io/github/stars/zafdrive/devops-evidence-pack?style=social)](https://github.com/zafdrive/devops-evidence-pack)
+[![GitHub forks](https://img.shields.io/github/forks/zafdrive/devops-evidence-pack?style=social)](https://github.com/zafdrive/devops-evidence-pack/network)
+[![GitHub issues](https://img.shields.io/github/issues/zafdrive/devops-evidence-pack)](https://github.com/zafdrive/devops-evidence-pack/issues)
 
----
-
-## Live demo (public)
-
-- App: https://app.<YOUR_DOMAIN>
-- API health: https://api.<YOUR_DOMAIN>/health
-- Status: https://status.<YOUR_DOMAIN>
-
-> Argo CD and Grafana are intentionally **not public**. They are available only via VPN/IP allowlist for security.
+**Portfolio:** [zafdrive.com](https://zafdrive.com) | **LinkedIn:** [pablo-comas](https://linkedin.com/in/pablo-comas) | **✉️** pablocomas@zafdrive.com
 
 ---
 
-## What I built (high level)
+## 🌐 Live Demos (Public)
 
-- **Kubernetes (k3s)** single-node cluster on an Ubuntu VPS
-- **GitOps** deployments with Argo CD (source of truth = Git)
-- **CI/CD** with GitHub Actions: test → build → push image → update GitOps → rollout
-- **Observability** with Prometheus + Grafana (dashboards + alerting)
-- **Centralized logging** with Loki (logs per namespace/app)
-- **Backup & restore drill** for PostgreSQL with measured RTO/RPO
-- **Runbooks** and a simulated incident / postmortem (GameDay)
+| Service | URL | Status |
+|---------|-----|--------|
+| **Demo App** | https://app.<TU-DOMINIO> | ![Live](https://img.shields.io/badge/Live-Green) |
+| **API Health** | https://api.<TU-DOMINIO>/health | ![Live](https://img.shields.io/badge/Live-Green) |
+| **Status Page** | https://status.<TU-DOMINIO> | ![Live](https://img.shields.io/badge/Live-Green) |
 
----
-
-## Architecture
-
-![Architecture](docs/architecture.png)
-
-If the image is missing, see: `docs/architecture.drawio` (source).
+> **Grafana/ArgoCD protegidos** (VPN/IP allowlist) por seguridad ✅
 
 ---
 
-## Repositories (modules)
+## 🏗️ Architecture (Mermaid)
 
-- GitOps (k3s + Argo CD manifests):  
-  https://github.com/<YOUR_GH_USER>/gitops-k3s-argocd
-
-- Demo application (FastAPI, metrics, health checks):  
-  https://github.com/<YOUR_GH_USER>/demo-fastapi-app
-
-- Observability (kube-prometheus-stack, dashboards, alerts):  
-  https://github.com/<YOUR_GH_USER>/observability-stack
-
-- Backup & restore drill (PostgreSQL → S3/MinIO, runbook):  
-  https://github.com/<YOUR_GH_USER>/backup-restore-drill
-
----
-
-## Proof / screenshots
-
-I will keep adding screenshots and short demos as the platform evolves.
-
-- [ ] Argo CD “Healthy/Synced” view
-- [ ] CI pipeline successful run + auto PR to GitOps repo
-- [ ] Grafana dashboard (RPS/latency/errors + node/container)
-- [ ] Backup + restore logs and verification
-
-Screenshots live in: `docs/screenshots/`
-
----
-
-## How to reproduce (overview)
-
-This is the minimal reproducible flow (details live in each module repo):
-
-1. Provision an Ubuntu VPS and configure DNS for `app/api/status` subdomains.
-2. Install k3s and kubectl access.
-3. Install Argo CD in-cluster.
-4. Bootstrap GitOps (“app-of-apps”) pointing to `gitops-k3s-argocd`.
-5. Push code changes to `demo-fastapi-app` → GitHub Actions builds and pushes images.
-6. CI updates the image tag in GitOps repo → Argo CD sync deploys it.
-
----
-
-## Security notes
-
-- No credentials are stored in Git.
-- Argo CD and Grafana endpoints are restricted via VPN or IP allowlist.
-- Any public endpoints are protected by TLS (via reverse proxy) and minimal exposure.
-
----
-
-## Roadmap
-
-See `ROADMAP.md` for the 8-week plan and milestones.
-
----
-
-## License
-
-MIT License.
+```mermaid
+graph TB
+    VPS["Ubuntu VPS<br/>Proxmox<br/>4c/24GB/200GB"] --> K3s["K3s Cluster<br/>Single Node"]
+    K3s --> ArgoCD["ArgoCD<br/>GitOps<br/>gitops-k3s-argocd"]
+    ArgoCD --> App["FastAPI Demo<br/>app.<TU-DOMINIO>"]
+    ArgoCD --> Obs["Observability<br/>grafana.<TU-DOMINIO>"]
+    ArgoCD --> Velero["Backup/DR<br/>backup-restore-drill"]
+    K3s --> NPM["Nginx Proxy Manager<br/>SSL + Routing"]
+    
+    classDef production fill:#00ff88,stroke:#333,stroke-width:3px
+    class App,Obs,Velero,NPM production
