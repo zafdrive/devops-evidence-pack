@@ -1,0 +1,11 @@
+name: CI Health Check
+on: [push, pull_request]
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: ✅ README Check
+      run: grep -q "Production K3s" README.md && echo "README OK"
+    - name: ✅ Structure
+      run: ls docs/ playbooks/ inventory/
